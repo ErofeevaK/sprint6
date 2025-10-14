@@ -1,8 +1,6 @@
 import allure
 from pages.base_page import BasePage
 from locators.order_locators import OrderLocators
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 
 class OrderPage(BasePage):
@@ -25,7 +23,7 @@ class OrderPage(BasePage):
         self.input_text(OrderLocators.ADDRESS, user_info["address"])
         # Выбор станции метро
         self.click_on_element(OrderLocators.METRO_STATION)
-        station = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located(user_info["station_locator"]))
+        station = self.wait_for_element_visible(user_info["station_locator"])
         station.click()
         # Ввод номера телефона
         self.input_text(OrderLocators.TELEPHONE, user_info["telephone"])
@@ -35,13 +33,13 @@ class OrderPage(BasePage):
     @allure.step("Заполнить вторую форму заказа")
     def fill_second_order_form(self, order_data):
         # Выбор даты
-        calendar_input = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(OrderLocators.WHEN_BRING_SCOOTER))
+        calendar_input = self.find_clickable_element(OrderLocators.WHEN_BRING_SCOOTER)
         self.click_on_element(OrderLocators.WHEN_BRING_SCOOTER)
         calendar_input.send_keys(order_data["date"])
         calendar_input.send_keys(Keys.ESCAPE)
 
         # Выбор срока аренды
-        WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(OrderLocators.RENTAL_PERIOD)).click()
+        self.find_clickable_element(OrderLocators.RENTAL_PERIOD).click()
         self.click_on_element(order_data["period"])
 
         # Выбор цвета
@@ -56,6 +54,6 @@ class OrderPage(BasePage):
 
     @allure.step("Ожидание видимости модального окна и получение текста окна Заказ оформлен")
     def is_order_successful(self):
-        modal = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(OrderLocators.CONFIRM_MODAL))
-        element_text = modal.find_element(*OrderLocators.ORDER_PLACED).text
+        modal = self.wait_for_element_visible(OrderLocators.CONFIRM_MODAL)
+        element_text = self.get_element_text(OrderLocators.ORDER_PLACED)
         return element_text

@@ -1,16 +1,15 @@
 import allure
 from pages.base_page import BasePage
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 
 class QuestionsSectionPage(BasePage):
 
     @allure.step("Кликает по вопросу")
     def click_question(self, question_locator):
-        question = self.driver.find_element(*question_locator)
-        question.click()
+        # Используем метод из BasePage вместо self.driver.find_element
+        self.click_on_element(question_locator)
 
     @allure.step("Получает текст ответа")
     def get_answer_text(self, answer_locator):
-        answer = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(answer_locator))
+        # Используем метод из BasePage вместо прямого WebDriverWait
+        answer = self.wait_for_element_visible(answer_locator)
         return answer.text
