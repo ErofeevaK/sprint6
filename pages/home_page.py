@@ -2,6 +2,7 @@ import allure
 from pages.base_page import BasePage
 from locators.home_locators import HomeLocators
 
+
 class HomePage(BasePage):
     @allure.step("Нажать на лого Яндекс")
     def click_logo_yandex(self):
